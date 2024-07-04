@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 def faceRecognition(image_path, emp_name):
     model = DeepFace.find(img_path=image_path, db_path="./Database", enforce_detection=False, model_name="VGG-Face", threshold=0.9)
-    print(model[0]["identity"])
+    print(model[0]["identity"][0][0].split('/')[1])
     prediction = model[0]['identity'][0].split('/')[1].split('\\')[1]
     name = prediction.split(' ')
     if emp_name == str(name[0] + " " + name[1]):
