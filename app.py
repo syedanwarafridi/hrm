@@ -26,11 +26,14 @@ def faceRecognition(image_path, emp_name):
     
     if isinstance(prediction_path, str):
         prediction = os.path.basename(prediction_path)
-        name_parts = prediction.split('/')[-2]  # Split by underscore assuming it's separating first and last name
+        name_parts = prediction.split('/')[-2]  # Split by '/' assuming it's separating first and last name
         if len(name_parts) >= 2 and emp_name == f"{name_parts[0]} {name_parts[1]}":
             return True
         else:
-             Than  So Will Möglichkeit Are W Now Let?Will Adjust
+            return False
+    else:
+        return False
+
 
 
 
