@@ -13,24 +13,27 @@ app = Flask(__name__)
 #         return True
 #     else:
 #         return False
+import os
+
 def faceRecognition(image_path, emp_name):
     model = DeepFace.find(img_path=image_path, db_path="./Database", enforce_detection=False, model_name="VGG-Face", threshold=0.9)
     
-    if not model or len(model) == 0:
+    if model.empty or len(model) == 0:
         return False  # Return false if no model results are found
 
     # Extract the prediction from the model
-    prediction_path = model[0]['identity']
-    
-    if prediction_path:
+    prediction_path = model.iloc[0]['identity']  # Assuming model is a DataFrame
+
+    if isinstance(prediction_path, str):
         prediction = os.path.basename(prediction_path)
-        name_parts = prediction.split('_') 
+        name_parts = prediction.split('_')  # Split by underscore assuming it's separating first and last name
         if len(name_parts) >= 2 and emp_name == f"{name_parts[0]} {name_parts[1]}":
             return True
         else:
             return False
     else:
         return False
+
 
 
 @app.route('/recognize', methods=['POST'])
