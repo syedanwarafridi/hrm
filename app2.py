@@ -37,32 +37,30 @@ def faceRecognition(image_path, emp_name):
         return False
     
 @app.route('/recognize', methods=['POST'])
-
 def recognize():
-
-    if 'image' not in request.files or 'id' not in request.form:
-
-        return jsonify({"error": "Please provide an image and employee name"}), 400
-
-
-    image = request.files['image']
-
-    emp_name = request.form['id']
-
-
-    image_path = f"./temp/{image.filename}"
-
-    image.save(image_path)
-
-
     try:
+        if 'image' not in request.files or 'id' not in request.form:
+            return jsonify({"error": "Please provide an image and employee name"}), 400
 
-        result = faceRecognition(image_path, emp_name)
+        image = request.files['image']
+        emp_name = request.form['id']
 
-        return jsonify({"recognized": result})
+        image_path = f"./temp/{image.filename}"
+
+        try:
+            image.save(image_path)
+        except Exception as e:
+            return jsonify({"error": f"Failed to save image: {str(e)}"}), 500
+
+        try:
+            result = faceRecognition(image_path, emp_name)
+            os.remove(image_path)  # Delete the temporary image file
+            return jsonify({"recognized": result})
+        except Exception as e:
+            os.remove(image_path)  # Delete the temporary image file
+            return jsonify({"error": str(e)}), 500
 
     except Exception as e:
-
         return jsonify({"error": str(e)}), 500
     
 @app.route('/extract_frames', methods=['POST'])
